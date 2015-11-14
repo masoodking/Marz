@@ -1,0 +1,1285 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Berim API",
+        "description": "<div style='direction: rtl'>به کمک نرم‌افزار بریم با دوستان خود برنامه بیرون رفتن هماهنگ کنید. <br/> این سند از چهار بخش تشکیل شده که در هر بخش توابع مربوط به همان بخش به همراه ورودی ها و خروجی های آن امده است. این بخش ها عبارتند از کاربر، مکان‌ها، دوستان و گفتگوها. سعی شده توضیحات هر تابع درون خود تابع داده شود و سند گویا باشد. به کمک شما دوستان کم کم این سند رو تکمیل خواهیم کرد. <br/> از دیگر مزیت های این سیستم قابلیت تست ای پی ای هست که در توابع زیر خواهید دید که میتونیم ورودی های هر تابع رو وارد کنیم و نتیجه خروجی رو ببینیم که مطمئنا خیلی کمکمون خواهد کرد. <br/> با سپاس فراوان :)</div>",
+        "version": "0.0.1"
+    },
+    "host": "api.berim.com",
+    "schemes": [
+        "https"
+    ],
+    "basePath": "/v1",
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/user/signup": {
+            "post": {
+                "summary": "register user",
+                "description": "register user by phone number and password (later we use phone number and verification code by sms like telegram)",
+                "parameters": [
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "description": "user phone number.",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "user password.",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/signin": {
+            "post": {
+                "summary": "login user",
+                "description": "get phone number and password and check user login\n",
+                "parameters": [
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "description": "user phone number.",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "user password.",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/resend_activation_code": {
+            "post": {
+                "summary": "send an activation code to user again",
+                "description": "each user need to activate his/her account so we send an activation code to user that user should enter it in client after signup\n",
+                "parameters": [
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "description": "user phone number.",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/activate": {
+            "post": {
+                "description": "after signup we should send an activation code to user by sms and user send it back to us by this function",
+                "parameters": [
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "description": "user phone number.",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    },
+                    {
+                        "name": "activation_code",
+                        "in": "query",
+                        "description": "activation code.",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/get_profile": {
+            "get": {
+                "summary": "get user Profile",
+                "description": "The User Profile endpoint returns information about the user that has authorized with the application.",
+                "parameters": [
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "description": "user phone number.",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "user password.",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profile information for a user",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/set_profile": {
+            "post": {
+                "summary": "save user Profile",
+                "description": "همه داده‌های ارسالی ذخیره و جایگزین داده های قبلی می‌شوندو در صورتی که داده‌ای ارسال نشده یا خالی ارسال شده است در نظر گرفته نمی‌شود.",
+                "parameters": [
+                    {
+                        "name": "full_name",
+                        "in": "query",
+                        "description": "full name of the user.",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "picture",
+                        "in": "query",
+                        "description": "Image avatar URL of the user.",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "username of user.",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "description": "user phone number.",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "user password.",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/place/get_places_list": {
+            "get": {
+                "summary": "get list of places",
+                "description": "لیست مکان ها سمت کلاینت در دیتابیس ذخیره می‌شود پس در این تابع تاریخ آخرین بروزرسانی پایگاه داده ارسال می‌شود و همه مکانهای جدید پس از آن برای کلاینت ارسال می‌شود. اگه تاریخ ارسالی خالی بود همه مکانها جهت ذخیره در کلاینت ارسال خواهد شد.",
+                "parameters": [
+                    {
+                        "name": "last_update",
+                        "in": "query",
+                        "description": "last database update date.",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "Place"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of Places",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Place"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/place/get_places_details": {
+            "get": {
+                "summary": "get details of a place",
+                "description": "به وسیله این تابع اطلاعات یک مکان به صورت کامل گرفته می‌شود، شامل ویژگی های خود مکان تعداد ووت و بررسی های مکان",
+                "parameters": [
+                    {
+                        "name": "last_update",
+                        "in": "query",
+                        "description": "last database update date.",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "Place"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/Place"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/place/add_new_place": {
+            "post": {
+                "summary": "add new place",
+                "description": "اطلاعات یک مکان که فقط شامل نام و توضیحات و تصاویر آن مکان میباشد توسط کاربر ارسال شده و سمت سرور ذخیره می‌شود",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "images",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "type": "number"
+                    }
+                ],
+                "tags": [
+                    "Place"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/place/rate_place": {
+            "post": {
+                "summary": "rate a place +1 or -1",
+                "description": "امتیاز دهی به مکان توسط این تابع انجام می‌گیرد",
+                "parameters": [
+                    {
+                        "name": "place_id",
+                        "in": "query",
+                        "type": "number"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "type": "number"
+                    },
+                    {
+                        "name": "vote",
+                        "in": "query",
+                        "type": "number",
+                        "description": "امتیاز مثبت یا منفی"
+                    }
+                ],
+                "tags": [
+                    "Place"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/place/report_place": {
+            "post": {
+                "summary": "report a place",
+                "description": "گزارش تخلف در یک مکان به کمک این تابع انجام می‌گیرد.",
+                "parameters": [
+                    {
+                        "name": "place_id",
+                        "in": "query",
+                        "type": "number"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "type": "number"
+                    },
+                    {
+                        "name": "reason",
+                        "in": "query",
+                        "type": "number",
+                        "description": "دلیل گزارش دادن این مورد"
+                    }
+                ],
+                "tags": [
+                    "Place"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/friend/get_friends_list": {
+            "get": {
+                "summary": "get list of friends",
+                "description": "دریافت لیست دوستان شامل اطلاعات اولیه کاربران",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "نام کاربری شخص درخواست دهنده.",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "Friend"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/friend/send_friend_request": {
+            "post": {
+                "summary": "send friend request",
+                "description": "ارسال درخواست دوستی",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "type": "string",
+                        "description": "شناسه کاربر درخواست دهنده"
+                    },
+                    {
+                        "name": "target_id",
+                        "in": "query",
+                        "type": "string",
+                        "description": "شناسه کاربر هدف"
+                    }
+                ],
+                "tags": [
+                    "Friend"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/friend/answer_friend_request": {
+            "post": {
+                "summary": "answer friend request",
+                "description": "پاسخ به درخواست دوستی",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "type": "number",
+                        "description": "شناسه کاربر درخواست دهنده"
+                    },
+                    {
+                        "name": "request_id",
+                        "in": "query",
+                        "type": "number",
+                        "description": "شناسه درخواست ارسال شده"
+                    },
+                    {
+                        "name": "answer",
+                        "in": "query",
+                        "type": "string",
+                        "description": "پاسخ درخواست به صورت پذیرش یا رد"
+                    }
+                ],
+                "tags": [
+                    "Friend"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/friend/block_user": {
+            "post": {
+                "summary": "block a user",
+                "description": "بلاک کردن کاربر",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "type": "number",
+                        "description": "شناسه کاربر درخواست دهنده"
+                    },
+                    {
+                        "name": "target_id",
+                        "in": "query",
+                        "type": "number",
+                        "description": "شناسه کاربر هدف"
+                    }
+                ],
+                "tags": [
+                    "Friend"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/friend/get_user_status": {
+            "get": {
+                "summary": "get user status",
+                "description": "دریافت وضعیت انلاین بودن کاربر",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "type": "number",
+                        "description": "شناسه کاربر درخواست دهنده"
+                    },
+                    {
+                        "name": "target_id",
+                        "in": "query",
+                        "type": "number",
+                        "description": "شناسه کاربر هدف"
+                    }
+                ],
+                "tags": [
+                    "Friend"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/friend/search_user": {
+            "get": {
+                "summary": "search in users",
+                "description": "جستجو بین کاربران",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "شناسه کاربر درخواست دهنده",
+                        "type": "number"
+                    },
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "متن جستجو",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Friend"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of Users",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/chat/send_message": {
+            "post": {
+                "summary": "send message",
+                "description": "ارسال پیام",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "type": "number",
+                        "description": "شناسه کاربر ارسال کننده",
+                        "required": true
+                    },
+                    {
+                        "name": "room_id",
+                        "in": "query",
+                        "type": "number",
+                        "required": true,
+                        "description": "گروه هدف"
+                    },
+                    {
+                        "name": "text",
+                        "in": "query",
+                        "type": "number",
+                        "description": "متن پیام"
+                    },
+                    {
+                        "name": "photo",
+                        "in": "query",
+                        "description": "تصویر پیام",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    },
+                    {
+                        "name": "video",
+                        "in": "query",
+                        "description": "ویدیو  پیام",
+                        "type": "number",
+                        "required": true,
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "Chat"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/chat/start_chat_on_a_place": {
+            "post": {
+                "summary": "create a topic on a place",
+                "description": "یک گروه برای یک مکان ایجاد می‌کنیم که چندین کاربر قادر به صحبت در آن هستند",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "شناسه کاربر ارسال کننده",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    },
+                    {
+                        "name": "plcae_id",
+                        "in": "query",
+                        "description": "مکان مورد نظر",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    },
+                    {
+                        "name": "users",
+                        "in": "query",
+                        "description": "لیستی از کاربران دعوت شده",
+                        "required": true,
+                        "type": "string",
+                        "format": "array"
+                    }
+                ],
+                "tags": [
+                    "Chat"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/chat/get_chat_list": {
+            "get": {
+                "summary": "get list of chats",
+                "description": "گرفتن لیست چت‌های کاربر برای نمایش در لیست ویو کلاینت. این لیست بر اساس آخرین بروزرسانی دیتابیس کلاینت صورت می‌گیرد.",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "شناسه کاربر درخواست دهنده",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    },
+                    {
+                        "name": "last_update",
+                        "in": "query",
+                        "description": "last client database update date.",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "Chat"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of Messages",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Message"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/chat/get_user_chat": {
+            "get": {
+                "summary": "get details of a user chat",
+                "description": "اطلاعات چت بین دو کاربر نصبت به آخرین زمان سینک دیتابیس کلاینت گرفته می‌شود",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "شناسه کاربر درخواست دهنده",
+                        "required": true,
+                        "type": "number",
+                        "format": "string"
+                    },
+                    {
+                        "name": "last_update",
+                        "description": "last client database update date.",
+                        "in": "query",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "Chat"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "لیست پیام های کاربر.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Message"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/friend/add_user_to_room": {
+            "post": {
+                "summary": "add user to room",
+                "description": "اضافه کردن یک کاربر به یک گروه",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "description": "شناسه کاربر درخواست دهنده",
+                        "type": "number",
+                        "in": "query",
+                        "required": true,
+                        "format": "string"
+                    },
+                    {
+                        "name": "target_id",
+                        "in": "query",
+                        "description": "شناسه کاربر هدف",
+                        "type": "number",
+                        "required": true,
+                        "format": "string"
+                    },
+                    {
+                        "name": "room_id",
+                        "type": "number",
+                        "description": "شناسه گروه هدف",
+                        "in": "query",
+                        "required": true,
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "Chat"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات سرور به درستی انجام شده و یک پیام در قسمت message قرار می‌گیرد",
+                        "schema": {
+                            "$ref": "#/definitions/DoneResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "id."
+                },
+                "phone_number": {
+                    "type": "number",
+                    "description": "phone number of the user."
+                },
+                "username": {
+                    "type": "string",
+                    "description": "username of user"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "password of user"
+                },
+                "avatar": {
+                    "type": "string",
+                    "description": "Image URL of the user."
+                }
+            }
+        },
+        "Message": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "chat id."
+                },
+                "sender_id": {
+                    "type": "number",
+                    "description": "sender id."
+                },
+                "room_id": {
+                    "type": "number",
+                    "description": "room id"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "message text"
+                },
+                "photo": {
+                    "type": "string",
+                    "description": "Image URL of the message."
+                },
+                "video": {
+                    "type": "string",
+                    "description": "Video URL of the user."
+                },
+                "date": {
+                    "type": "string",
+                    "description": "send time."
+                },
+                "seen": {
+                    "type": "boolean",
+                    "description": "user seen this message?"
+                }
+            }
+        },
+        "Place": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "number",
+                    "description": "place id"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "name of the place."
+                },
+                "vote_number": {
+                    "type": "number",
+                    "description": "number of vote for this place, can be positive or negative."
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PlaceImage"
+                    }
+                },
+                "reviews": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Review"
+                    }
+                }
+            }
+        },
+        "PlaceImage": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "place_id": {
+                    "type": "number"
+                },
+                "orginal_url": {
+                    "type": "string"
+                },
+                "thumbnail_url": {
+                    "type": "string"
+                },
+                "upload_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "Room": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "place_id": {
+                    "type": "string"
+                },
+                "max_user_count": {
+                    "type": "number",
+                    "description": "each room has a maximom limit for user"
+                },
+                "create_date": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                }
+            }
+        },
+        "Join": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "user_id": {
+                    "type": "number"
+                },
+                "room_id": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "PlaceVote": {
+            "type": "object",
+            "description": "each user can vote any place +1 or -1 and if send a vote for same place again update his/her vote by new rate",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "user_id": {
+                    "type": "number"
+                },
+                "place_id": {
+                    "type": "number"
+                },
+                "rate": {
+                    "type": "number",
+                    "description": "+1 or -1 vote"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "Review": {
+            "type": "object",
+            "description": "any user can send review for each place",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "user_id": {
+                    "type": "number"
+                },
+                "place_id": {
+                    "type": "number"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "photo": {
+                    "type": "string"
+                },
+                "video": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "status can be accepted, rejected, waiting"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "ReviewVote": {
+            "type": "object",
+            "description": "each user can vote any review +1 or -1 and if send a vote for same review again update his/her vote by new rate. we can sort reviews for each place by number of plus rate, so users see usfull review on top of page.",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "user_id": {
+                    "type": "number"
+                },
+                "review_id": {
+                    "type": "number"
+                },
+                "rate": {
+                    "type": "number",
+                    "description": "+1 or -1 vote"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "ReportPlace": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "user_id": {
+                    "type": "number"
+                },
+                "place_id": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "why did you report this Place?! hum?!"
+                }
+            }
+        },
+        "ReportUser": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "reporter_id": {
+                    "type": "number"
+                },
+                "user_id": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "why did you report this User?! hum?!"
+                }
+            }
+        },
+        "BlockUser": {
+            "type": "object",
+            "description": "each user can block another whitout any reason!",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "blocker_id": {
+                    "type": "number",
+                    "description": "id of user that block other user"
+                },
+                "blocked_id": {
+                    "type": "number",
+                    "description": "id of user that blocked by other user"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "Friend": {
+            "type": "object",
+            "description": "each pair of user can be friend",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "user_one_id": {
+                    "type": "number"
+                },
+                "user_row_id": {
+                    "type": "number"
+                },
+                "create_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "DoneResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
